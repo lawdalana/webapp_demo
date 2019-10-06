@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from calculator import quadratic
 
 app = Flask(__name__)
@@ -31,6 +31,21 @@ def calculate():
             return render_template('calculator_result.html', a=a, b=b, c=c,
                                    root_1=root_1, root_2=root_2)
     return render_template('calculator_form.html')
+
+@app.route('/calculator/quadratic', methods=['POST'])
+def api_calculator():
+    a = float(request.form['a'])
+    b = float(request.form['b'])
+    c = float(request.form['c'])
+    root_1, root_2 = quadratic(a, b, c)
+    result = {
+        'root_1': root_1,
+        'root_2': root_2,
+    }
+    output = {
+        'result': result
+    }
+    return jsonify(output)
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080)
